@@ -1,0 +1,35 @@
+import numpy
+# Mērķa funkcija
+def objective_func(x, y):
+    return x - 2*y + 1*x**2 + 2*x*y + 4*y**2
+# Gradienta vektors
+def gradient(x, y):
+    return numpy.array([1 + 2*x + 2*y, -2 + 2*x + 8*y])
+# Hesiāna matrica
+def hessian(x, y):
+    return numpy.array([[2, 2], [2, 8]])
+# Nodefinē Ņūtona metodi
+def newton_method(start_x, start_y, t, eps):
+    variables = numpy.array([start_x, start_y])
+    gradient_norm = numpy.linalg.norm(gradient(*variables))
+    iterations = 0
+    while gradient_norm > eps:
+        gradient_val = gradient(*variables)
+        hessian_val = hessian(*variables)
+        variables = variables - (t * numpy.linalg.inv(hessian_val) @ gradient_val)
+        gradient_norm = numpy.linalg.norm(gradient_val)
+        iterations = iterations + 1     # Skaita iterācijas
+    return variables[0], variables[1], iterations   # Pēc metodes izpildes atgriež 3 vērtības, optimālos x, y un veikto iterāciju skaitu
+t = 0.5         # Solis
+eps = 0.05      # Epsilons, precizitātes līmenis
+start_x = 0.1   # Sākuma x vērtība
+start_y = 0.1   # Sākuma y vērtība
+# Ņūtona metodes izpilde, izpilda un izgūst 3 vērtības
+optimal_x, optimal_y, iterations_kopa = newton_method(start_x, start_y, t, eps)
+# Izrēķina min f(x1, x2) un izprintē rezultātus, ja nav null vērtība
+if optimal_x is not None:
+    min_value = objective_func(optimal_x, optimal_y)
+    print("Optimālais x: {:.5f}".format(optimal_x))
+    print("Optimālais y: {:.5f}".format(optimal_y))
+    print("Min f(x1, x2): {:.5f}".format(min_value))
+    print("Iterāciju skaits: {}".format(iterations_kopa))
